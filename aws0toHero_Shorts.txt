@@ -1,0 +1,311 @@
+Day1
+    Cloud-
+        Public
+        Private
+
+Day2
+    AWS IAM-what and why
+        users   
+        groups
+        policies
+        Roles
+    IAM-authentication and authorisation 
+     eg: create user->assign policies & add in groups
+         Roles-->temp users for services
+         
+Day3
+    EC2 _(virtual server(VM))->what,why,types,regions,avail zones
+        deploy,access app from outside
+
+Day4
+    VPC->what,why/components
+        (gateway,subnet,routetable,LB)
+
+Day5
+    SG(secuirty grps)+NACL(network access control list)
+     - Inbound,Outbound
+
+Day6
+    Route53(DNS as a Service)
+        domain registration-updated dns records using hosted zones
+         & health checks
+Day7
+    AWS Project
+    This example demonstrates how to create a VPC that you can use for servers in a production environment.
+    
+    To improve resiliency, you deploy the servers in two Availability Zones,
+    by using an Auto Scaling group and an Application Load Balancer. For 
+    additional security, you deploy the servers in private subnets. The 
+    servers receive requests through the load balancerThe servers can 
+    connect to the internet by using a NAT gatewayTo improve resiliency, 
+    you deploy the NAT gateway in both Availability Zones.
+Day8  
+    Senario based interview Q's
+Day9
+    S3 storage
+        -scalable,highly avail,secure and cost effective
+         performance
+        -store as well as object versioning system
+Day10
+    AWS CLI(API's)....acts as a layer btwn user and aws api
+        Infrastructure Mgmt
+    Tools which allow automatation for Infra(IaC)
+        AWS CLI->short quick actions..eg: list buckets
+Day11
+    CFT->->Create stack->Template->IaC
+        -Should be declarative and versioned
+    CFT to create more than one resources or huge stacks
+    CFT supports drift status(change reports)
+    CFT Template    
+        Version
+        Description
+        metadata
+        Parameters
+        Rules
+        Mappings
+        Conditions
+        Resources.....mandatory!
+Day12
+    aws CI-CD=> everything managed 
+    aws Code Commit->like git
+    Diadvs:
+        FEATURES,AWS RESTRICTED, LESS INTEGRATIONS WITH Services
+                                    OUTSIDE AWS
+    also 
+    aws CodePipeline-> like jenkins
+    aws CodeBuild-> like docker,maven,sonarc
+    aws Code deploy-> argocd,ansible
+
+Day13
+    aws CodePipeline
+
+    user                 check-build-
+     dev                code-scan-pushImg          [CD]- aws-CD
+(code commit)--(webhook)-->Jenkins/aws-CP----------update k8-------------->K8/Ec2
+    GIT         trigger      [CI]                 GIT(OPS)argocd,
+                                                helm charts,ansible
+
+Day14
+aws CodeBuild
+    hook git & create an IAM
+    Build commands-->aws systems manager->parameters store
+        check out-->build & UT-->code scan-->Image build-->image push
+    now integrate with pipeline aws Code pipeline-.src provider github ver2
+    connect to github,, fill form
+
+Day 15
+Aws codeDeploy
+ create an EC2
+ give it a tag name
+ install aws codeDeploy agent on ec2 or ec2's
+ Edit IAM  permisson on EC2 with code deploy access
+ copy the same to EC2 security IAM role
+ >sudo service codedeploy-agent restart
+create appspec.yml in github
+create deployment grp in code deploy |
+watch the video  // as you need too many files for this
+
+Day16
+Aws cloud watch
+    gatekeeper helps in monitoring,alerting,reporting and 
+                        logging, tracking active/in activities 
+    Real life metrics
+    custom metrics
+    cost optimizaton
+
+Day17
+Aws Lambda----event driven tirggers
+    Serverless | commpute | serverless
+ manage scale up/down
+ cost optimizaton(script) notifications
+ schdeduled runs
+ security & compliance
+
+ Day18 
+ Cloud cost optimizaton
+    lambda function-> python(boto3)-->EBS snapshots
+                                    ( for stale resources-delete)
+    trigger using cloud watch
+    github link: https://github.com/iam-veeramalla/aws-devops-zero-to-hero/blob/main/day-18/README.md#aws-cloud-cost-optimization---identifying-stale-resources
+    also Project
+    //default invocation time for lamda 3sec but u can edit in configuration(isCharged)
+    give permissions for snapshots in configurations-add permission-attach policies
+    create ur own policy
+    attach snapshot and ec2 policy permissions
+    delete snapshot(on basis of timestamp and deleted instance ec2)
+    also
+    //can use cloud watch to invoke the lambda function...scheduling
+
+Day19
+CloudFront CDN : cache 
+    managed CDN: multiple copies stored in edge loc's(diff datacenters)
+    >host static website in s3 bucket at edge locs using CF
+     >create dstribution>origin domain
+
+Day20
+ECR..store and manage containers(payAsYouGo)...like docker hub,gcr
+ Elastic container registery[pvt repo](scalable & available-highly, security)
+ 
+ Day21
+ Aws ECS            ......but EKS > ECS
+  ECS vs EKS vs K8
+  ECS : auto scale & auto heal  ...//k8 distributions ; openshift,AKS,EKS
+  *ECS uses Tasks defines>services>clusters
+  //fargate: serverless compute supports ECS(all managed)
+steps
+    > create cluster
+    >steps create ECR repo
+    >login aws CLI 
+    >build docker img and push it
+    >go to ECS and create defination
+    > create task role and exec role (for container agent )
+    //integrate ECS with cloudwatch to check logs for issues
+    >fill in container -1 details
+    >Active task then run task
+
+pros & cons
+        
+        pros: 
+            ECS is less complicated than k8 architecture
+            simply managed by aws
+            just create a task defination and create a LB (ec2 usage)
+            //with fargate just dont worry
+            k8 is resource inteseive ECS is lightweight with aws
+        cons:
+            no flexiblity...restricted to aws 
+                with lim features:
+                    k8 has CRD: custom resource defining
+                    create own controllers
+                advs security pluginns
+
+        unlike k8 keeps adding features through open src community
+
+Day22
+AWS elastic kubernetes service
+ EKS : managed contolled plane....better use with fargate
+ (control plane and data plane) or rather use KOPS(but u need to manage)
+ //managing k8 is difficult 
+ // load balancer mode is expensive better use ingress(ALB controller)
+configuration:
+  Devops eng will create pod,service and ingress for aws EKS
+steps:
+install kubectl, eksctl and awsCLI on your machine
+cmd> eksctl create cluster --name --region --fargate...//as EKS has lot of configurations
+Better watch the demo
+
+Day23
+Secrets Management on AWS...IMP from intv pt of view
+ /used to handel secrets and manage sensitive info/
+ 3 types:
+    Systems manager.....not higly sensitive
+        parametes store...easy to retrive.. 
+            by granting permission IAM role to services
+            eg: docker username,registry url,certifcates
+    secrets manager....used to store highly sensitive data
+            eg: db, API tokens (also provides 
+                            &use rotates pwd once in x days..also u can create your own custom aws lambda)
+    //recommended use systems and secrets manager together
+    hashicorp vault...not an aws offering
+        Dedicated secrets manager,,,,open src,additional features keeps on 
+                adding through community
+        Good for hybrid cloud...together with aws, azure
+
+Day24
+Terraform with aws 
+ install aws CLI, Terraform..use root user later IAM user
+ create file provider.tf
+ /choose provider on Terraform and use provider
+ //* use terraform documentations
+ steps
+  cmds?
+  first cmd to run > terraform init .......//use terraform to see cmds
+  create main.tf
+  /resource "" ....... documentation for aws VPC
+  /variable.tf
+  //////KEEP UI AND DOCUMENTAION AS A REFRENCE USING TERRAFORm
+  // to check script use >terraform validate
+  // >terraform dryrun....shows what all will be created 
+
+Day25
+ Aws config....configure set of rules..integrate with lamda
+  compliance: in an org : related with security
+   eg: EC2's have monitoring onn by default..monitoring in cloudwatch
+    Aws configure : options
+        AWS managed rules
+        Create lamda rules : have lamda function ready(ARN)
+            Assign access/permissions  -create fnction......IAM rule with policy
+
+Day26
+Aws Loadbalancer
+ Types:
+ ALB, NLB, GWLB
+        ALB(L7) ,          NLB(L4) ,                GWLB(Http layer)
+        host            Transport layer(IP)           Gateway LB
+        domain       gameServers,streaming          VPN's, Firewall
+        path           low latency, fast            specific traffic-V-IP's
+        reads HTTP       high transmission data   Highly secure traffic
+    eg:amzon.com/abc    (less costly)
+    costly due to    performs routing on TCP/UDp
+    advance capablity
+    slow, hop
+
+Day27 
+Interview questions 500
+
+Day28
+Migrating apps to cloud...explain this experiences of orgs
+Project how?
+    1]Preparation..>Convert monolitich to microservices..apps..eg:containers
+    2]Planning..>which services have to go in phases[1-5]..based on criticality
+           ] [1 and 2 are one time stages [ [
+    3]migrate..>which strategy to use from..../write scripts,
+    4]monitor..>Keep checks for performance.../watch logs,chronjobs,jenkins instance
+    5]optimse..>improve---evaluate--optimse
+strategies[7R's] *MOST USED
+    *Rehost--------->Lift and shift deploy-->minimun efforts
+                    works well if no dependences on OS,hhardware & env
+    *Replatform----->Make little changes to get advantages of cloud
+    Repurchase--->lok=ok for alternatives..least used
+    *Refactor/ Rearhiturute--->Mono to microservices..Rebuild latest & best
+    Relocate-->eg:change platformmove from k8 to EKS/Openshift(ROSA).../costly
+    Retire-->Not continue with the least or none used apps..save cost
+    Retain---->Not let all apps on cloud but keepp on prem and connect with 
+                aws using gateway, VPN
+Migrate databases aswell...extra caustion
+ [find right fit as in services match-->RDS fully managed]\
+ Take backups ...to avoid data loss during Migrating
+
+Day29
+How I will crack Devops interviews
+    Tips: Prepare well
+        know basics
+        Do handson
+        Find good courses with demos - labs
+        Analize JD's, focus on Requirements & trends
+        Interviews -then- Certifications
+
+Day30
+//Two tier: eg : Calculator----only front and back
+                 2048 game
+Three-Tier architecture implementation on AWS 
+FrontEnd+Backend+Database
+ USer-->appserver<--->Webserver<---->db
+                        [Backend]---->[Database]
+                          /
+user--------->[Front end]/
+    az.com         UI
+
+Steps: Aws account
+    services required
+    Start by creating VPC with cidr block range
+    (depending on app, split vpc in 3 blocks)
+    /Private for front end and backend and db
+    Use(ASG) auto scaling for FrontEnd--/scale and Availability z's
+    //user--->Router--->CDN--->ELB to Ec2's
+
+When to say and not say about 3-tier
+    bcause most orgs now do not use Ec2's and but k8 clusters
+
+
+
+
